@@ -1,26 +1,14 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React,{Component} from 'react'
+import {HashRouter as Router, Route, Switch } from 'react-router-dom'
+import {DashBoard,Login,Error} from './pages'
+const App = ()=>(
+    <Router>
+        <Switch>
+            <Route exact path="/admin/" component={DashBoard}/>
+            <Route path="/login" component={Login}/>
+            <Route path="/" component={Error}/>
+        </Switch>
+    </Router>
+)
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
-
-export default App;
+export default App
