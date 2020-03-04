@@ -17,7 +17,8 @@ ReactDOM.render(
             */}
             {
                 mainRoutes.map(route=>{
-                    return <Route key={route.pathname} path={route.pathname} component={route.component}/>   
+                    return <Route 
+                    key={route.pathname} path={route.pathname} component={route.component}/>   
                 })
             }
             <Redirect to="/admin" from="/" exact />
