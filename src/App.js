@@ -1,10 +1,13 @@
 import React,{Component} from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 import { adminRoutes } from './router'
+import {Frame} from './components'
+
+const menus = adminRoutes.filter(item=>item.isNav===true)
+
 const App = ()=>(
     <div>
-        <div>公共部分</div>
-        {/* 后期根据角色不同也有权限 */}
+        <Frame menus={menus}>
         <Switch>
             {            
             adminRoutes.map(route=>{
@@ -22,6 +25,9 @@ const App = ()=>(
             <Redirect to={adminRoutes[0].pathname} from="/admin" exact/>
             <Redirect to="/404" />
         </Switch>
+        </Frame>
+        {/* <div>公共部分</div> */}
+        {/* 后期根据角色不同也有权限 */}
         
     </div>
 )
