@@ -6,7 +6,6 @@ import {Frame} from './components'
 const menus = adminRoutes.filter(item=>item.isNav===true)
 
 const App = ()=>(
-    <div>
         <Frame menus={menus}>
         <Switch>
             {            
@@ -25,11 +24,9 @@ const App = ()=>(
             <Redirect to={adminRoutes[0].pathname} from="/admin" exact/>
             <Redirect to="/404" />
         </Switch>
-        </Frame>
         {/* <div>公共部分</div> */}
         {/* 后期根据角色不同也有权限 */}
-        
-    </div>
+        </Frame>        
 )
 
 export default App

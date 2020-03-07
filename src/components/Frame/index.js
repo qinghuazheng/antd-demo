@@ -1,18 +1,22 @@
 import React, { Component } from 'react'
-import { Layout, Menu, Breadcrumb } from 'antd'
-import { UserOutlined, LaptopOutlined, NotificationOutlined } from '@ant-design/icons'
-import { render } from 'react-dom'
-import {adminRoutes} from '../../router'
+import { Layout, Menu} from 'antd'
+import {withRouter} from 'react-router-dom'
 import './frame.less'
 import logo from './logo.png'
 
 
-const { SubMenu } = Menu
 const { Header, Content, Sider } = Layout
-export default class Frame extends Component{
+
+
+@withRouter
+class Frame extends Component{
+    onMenuClick = ({ item, key, keyPath, domEvent }) => {
+      // console.log(item, key, this.props)
+      this.props.history.push(key)
+    }
     render(){
         return (
-            <Layout>
+            <Layout style={{minHeight:'100%'}}>
             <Header className="header zh-header">
               <div className="logo zh-logo">
                   <img src={logo} />
@@ -21,30 +25,30 @@ export default class Frame extends Component{
             <Layout>
               <Sider width={200} className="site-layout-background">
                 <Menu
+                  onClick={this.onMenuClick}
                   mode="inline"
-                  defaultSelectedKeys={['1']}
+                  selectedKeys={[this.props.location.pathname]}
                   defaultOpenKeys={['sub1']}
                   style={{ height: '100%', borderRight: 0 }}
                 >
                     {
                         this.props.menus.map(item=>(
-                        <Menu.Item key={item.pathname}>{item.title}</Menu.Item>
+                        <Menu.Item key={item.pathname}>
+                          {item.icon}
+                          {item.title}
+                        </Menu.Item>
                         ))
                     }
                 </Menu>
               </Sider>
-              <Layout style={{ padding: '0 24px 24px' }}>
-                <Breadcrumb style={{ margin: '16px 0' }}>
-                  <Breadcrumb.Item>Home</Breadcrumb.Item>
-                  <Breadcrumb.Item>List</Breadcrumb.Item>
-                  <Breadcrumb.Item>App</Breadcrumb.Item>
-                </Breadcrumb>
+              <Layout style={{ padding: '16px' }}>
                 <Content
                   className="site-layout-background"
                   style={{
                     padding: 24,
                     margin: 0,
                     minHeight: 280,
+                    background:'#fff'
                   }}
                 >
                   {this.props.children}
@@ -55,3 +59,5 @@ export default class Frame extends Component{
         )
     }
 }
+
+export default Frame

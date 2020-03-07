@@ -27,7 +27,7 @@ class App extends Component {
         const { style, newName, name } = this.props
         return (
           <div style={style}>
-               <Button type="primary">{newName || name}</Button>
+               {/* <Button type="primary">{newName || name}</Button> */}
           </div>
         )
     }
