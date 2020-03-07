@@ -19,7 +19,7 @@ class Frame extends Component{
             <Layout style={{minHeight:'100%'}}>
             <Header className="header zh-header">
               <div className="logo zh-logo">
-                  <img src={logo} />
+                  <img src={logo} alt="logo"/>
               </div>
             </Header>
             <Layout>

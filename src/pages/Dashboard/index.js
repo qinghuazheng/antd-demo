@@ -1,5 +1,5 @@
 import React,{Component} from 'react'
-import {Button} from 'antd'
+// import {Button} from 'antd'
 
 //可以为木偶组件增加生命周期
 const Parents = (Child)=>{
@@ -20,14 +20,10 @@ const Parents = (Child)=>{
 //将自身当作参数传入装饰器
 @Parents
 class App extends Component {
-    constructor(props){
-        super(props)
-    }
     render() {
-        const { style, newName, name } = this.props
         return (
-          <div style={style}>
-               {/* <Button type="primary">{newName || name}</Button> */}
+          <div>
+               {/* <Button type="primary">{}</Button> */}
           </div>
         )
     }
