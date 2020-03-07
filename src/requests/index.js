@@ -25,6 +25,5 @@ service.interceptors.response.use((response)=>{
 })
 
 export const getArticles = ({offset=0,limit=10}={})=>{
-    console.log(offset,limit)
     return service.get('/articleList',{params:{offset,limit}})
 }

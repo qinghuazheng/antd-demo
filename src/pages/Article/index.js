@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card,Button,Table,Tag,DatePicker } from 'antd'
+import { Card,Button,Table,Tag,Radio } from 'antd'
 import format from 'dayjs';
 import { getArticles } from '../../requests'
 window.format = format
@@ -12,41 +12,37 @@ const titleDisplayMap = {
     amount:'数量',
     createdAt:'创建时间'
 }
-
-
 class ArticleList extends Component {
     constructor(props) {
         super(props);
         this.state = {
             dataSource:[],
             //dataIndex与dataSource中的key进行关联
-            columns:[
-                {
-                  title: '姓名',
-                  dataIndex: 'name',
-                  key: 'name',
-                },{
-                  title: '年龄',
-                  dataIndex: 'age',
-                  key: 'age',
-                },{
-                  title: '住址',
-                  dataIndex: 'address',
-                  key: 'address',
-                },{
-                  title: '操作',
-                  dataIndex: 'action',
-                  key: 'action',
-                  render: (text, record, index)=>{
-                      return <Button>编辑</Button>
-                  }
-                },
-            ],
-            total:null
+            columns:[],
+            total:null,
+            loading:false,
+            offset:0,
+            limit:10
         }
     }
+    getData=()=>{
+        getArticles({offset:this.state.offset,limit:this.state.limit}).then(res=>{
+            const columns = this.createColumns(res)
+            this.setState({
+                dataSource:res.list,
+                columns,
+                total:res.total
+            })
+        }).catch(error=>{
+
+        }).finally(()=>{
+            this.setState({
+                loading:false
+            })
+        })
+    }
     createColumns = (res) => {
-        return Object.keys(res.list[0]).map(key=>
+        const columns = Object.keys(res.list[0]).map(key=>
             {
             if(key === 'amount'){
                 return{
@@ -73,16 +69,39 @@ class ArticleList extends Component {
                 key
             })
         })
+        columns.push({
+            title:'操作',
+            dataIndex:'action',
+            render:()=>(
+                <Radio.Group>
+                    <Radio.Button size="small">编辑</Radio.Button>
+                    <Radio.Button size="small">删除</Radio.Button>
+                </Radio.Group>
+            )
+        })
+        return columns
+    }
+    onPageChange = (page,pageSize)=>{
+        this.setState({
+            offset:page-1,
+            limit:pageSize
+        },()=>{
+            this.getData()
+        })
+    }
+    onShowSizeChange = (current, size)=>{
+        this.setState({
+            offset:0,
+            limit:size
+        },()=>{
+            this.getData()
+        })
     }
     componentDidMount(){
-        getArticles().then(res=>{
-            const columns = this.createColumns(res)
-            this.setState({
-                dataSource:res.list,
-                columns,
-                total:res.total
-            })
+        this.setState({
+            loading:true
         })
+        this.getData()
     }
     render() {
         return ( 
@@ -97,9 +116,13 @@ class ArticleList extends Component {
                     pagination={{
                         total:this.state.total,
                         hideOnSinglePage:true,
+                        showQuickJumper:true,
+                        showSizeChanger:true,
+                        onChange:this.onPageChange,
+                        onShowSizeChange:this.onShowSizeChange
                         // pageSize:1                       
                     }}
-                    // loading={true}
+                    loading={this.state.loading}
                 />   
             </Card>
          );
