@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Card,Button,Table,Tag,Radio } from 'antd'
 import format from 'dayjs';
 import { getArticles } from '../../requests'
-window.format = format
+import XLSX from 'xlsx'
 
 const titleDisplayMap = {
     id:'id',
@@ -24,6 +24,23 @@ class ArticleList extends Component {
             offset:0,
             limit:10
         }
+    }
+    exportData=()=>{
+        const Data = [Object.keys(this.state.dataSource)]
+        for(let i=1;i<this.state.dataSource.length;i++){
+           Data.push([
+                this.state.dataSource[i].id,
+                this.state.dataSource[i].name,
+                this.state.dataSource[i].age,
+                this.state.dataSource[i].amount,
+                format(this.state.dataSource[i].createdAt).format("YYYY年MM月DD日 HH:mm:ss"),
+            ])
+        }
+        const ws = XLSX.utils.aoa_to_sheet(Data);
+		const wb = XLSX.utils.book_new();
+		XLSX.utils.book_append_sheet(wb, ws, "SheetJS");
+		/* generate XLSX file and send to client */
+		XLSX.writeFile(wb,`${format().format("YYYY年MM月DD日 HH:mm:ss")}.xlsx`)
     }
     getData=()=>{
         getArticles({offset:this.state.offset,limit:this.state.limit}).then(res=>{
@@ -108,7 +125,7 @@ class ArticleList extends Component {
             <Card 
                 title="文章列表"
                 bordered={false}
-                extra={<Button>导出excel</Button>}>
+                extra={<Button onClick={this.exportData}>导出excel</Button>}>
                 <Table
                     rowKey={record=>record.id}
                     dataSource={this.state.dataSource} 
