@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Card,Button,Table,Tag,Radio } from 'antd'
+import { Card,Button,Table,Tag,Radio,Modal,Typography,message,Tooltip } from 'antd'
 import format from 'dayjs';
-import { getArticles } from '../../requests'
+import { getArticles,deleteArticle } from '../../requests'
 import XLSX from 'xlsx'
 
+const {Title} = Typography;
 const titleDisplayMap = {
     id:'id',
     name:'作者',
@@ -22,7 +23,10 @@ class ArticleList extends Component {
             total:null,
             loading:false,
             offset:0,
-            limit:10
+            limit:10,
+            deleteArticleModalContent:null,
+            isShowArticleModal:false,
+            deleteArticleConfirmLoading:false,
         }
     }
     exportData=()=>{
@@ -67,7 +71,11 @@ class ArticleList extends Component {
                     key,
                     render:(text,record)=>{
                         const {amount} = record
-                    return (amount>200?<Tag color='red'>{amount}</Tag>:<Tag color='green'>{amount}</Tag>)
+                    return (
+                        <Tooltip title={amount>200?'超过200':'少于200'}>
+                            <Tag color={amount>200?'red':'green'}>{amount}</Tag>
+                        </Tooltip>
+                        )
                     }
                 }
             }else if(key === 'createdAt'){
@@ -89,14 +97,62 @@ class ArticleList extends Component {
         columns.push({
             title:'操作',
             dataIndex:'action',
-            render:()=>(
+            render:(text,record)=>(
                 <Radio.Group>
-                    <Radio.Button size="small">编辑</Radio.Button>
-                    <Radio.Button size="small">删除</Radio.Button>
+                    <Radio.Button size="small" onClick={this.editArticle.bind(this,record.id)}>编辑</Radio.Button>
+                    <Radio.Button size="small" onClick = {this.showDeleteArticleModal.bind(this,record.id)}>删除</Radio.Button>
                 </Radio.Group>
             )
         })
         return columns
+    }
+    editArticle=(id)=>{
+        this.props.history.push(`/admin/article/edit/${id}`)
+    }
+    showDeleteArticleModal=(id)=>{
+        this.setState({
+            deleteArticleModalContent:id,
+            isShowArticleModal:true,
+        })   
+        //点击确定后，弹框直接消失，体验不好
+        // Modal.confirm({
+        //     title: <Title level={4}>确认删除<span style={{color:'red'}}>{id}</span>吗?</Title>,
+        //     content: '请谨慎操作',
+        //     okText: '确认',
+        //     cancelText: '取消',
+        //     onOk(){
+        //         deleteArticle(id).then(res=>message.success(res))
+        //     }
+        // })
+    }
+    hideDeleteArticleModal=()=>{
+        this.setState({
+            isShowArticleModal:false,
+            deleteArticleModalContent:'',
+            deleteArticleConfirmLoading:false
+        })
+    }
+
+    deleteArticle=()=>{
+        this.setState({
+            deleteArticleConfirmLoading:true
+        })
+        deleteArticle(this.state.deleteArticleModalContent).then(
+            res=>{
+                message.success(res)
+                //此处未重新定位到第一页
+                this.setState({
+                    offset:0
+                },()=>{
+                    this.getData()
+                })
+            }
+        ).finally(()=>{
+            this.setState({
+                deleteArticleConfirmLoading:false,
+                isShowArticleModal:false
+            })
+        })
     }
     onPageChange = (page,pageSize)=>{
         this.setState({
@@ -140,7 +196,16 @@ class ArticleList extends Component {
                         // pageSize:1                       
                     }}
                     loading={this.state.loading}
-                />   
+                />
+                <Modal 
+                    title="此操作不可逆"
+                    visible={this.state.isShowArticleModal}
+                    onOk={this.deleteArticle}
+                    onCancel={this.hideDeleteModal}
+                    confirmLoading={this.state.deleteArticleConfirmLoading}
+                >
+                    <Title level={4}>确认删除<span style={{color:'red'}}>{this.state.showDeleteArticleModal}</span>吗?</Title>    
+                </Modal>   
             </Card>
          );
     }

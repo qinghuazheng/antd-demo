@@ -19,11 +19,16 @@ service.interceptors.request.use((config)=>{
 service.interceptors.response.use((response)=>{
     if(response.data.code === 200){
         return response.data.data
-    }else{
+    }else{  
         message.error(response.data.errMsg)
     }
 })
 
+//获取文章列表
 export const getArticles = ({offset=0,limit=10}={})=>{
     return service.get('/articleList',{params:{offset,limit}})
+}
+
+export const deleteArticle = (id)=>{
+    return service.post('/article/delete/${id}')
 }
