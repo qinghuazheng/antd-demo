@@ -9,6 +9,7 @@ const titleDisplayMap = {
     id:'id',
     name:'作者',
     address:'地址',
+    sign:'签名',
     age:'年龄',
     amount:'数量',
     createdAt:'创建时间'

@@ -9,12 +9,14 @@ const { Header, Content, Sider } = Layout
 
 
 @withRouter
-class Frame extends Component{
+class Frame extends Component{    
     onMenuClick = ({ item, key, keyPath, domEvent }) => {
       // console.log(item, key, this.props)
       this.props.history.push(key)
     }
     render(){
+      const selectedKeys = this.props.location.pathname.split('/')
+      selectedKeys.length=3
         return (
             <Layout style={{minHeight:'100%'}}>
             <Header className="header zh-header">
@@ -27,7 +29,7 @@ class Frame extends Component{
                 <Menu
                   onClick={this.onMenuClick}
                   mode="inline"
-                  selectedKeys={[this.props.location.pathname]}
+                  selectedKeys={[selectedKeys.join('/')]}
                   defaultOpenKeys={['sub1']}
                   style={{ height: '100%', borderRight: 0 }}
                 >
