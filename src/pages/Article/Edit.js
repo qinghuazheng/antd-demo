@@ -1,16 +1,38 @@
-import React, { Component } from 'react';
-import{Card, Button, Form, Input} from 'antd'
+import React, { Component,createRef } from 'react';
+import{Card, Button, Form, Input, DatePicker, Spin } from 'antd'
+import E from 'wangeditor'
+import './edit.less'
+
+// @Form.create()
 class Edit extends Component {
     constructor(props) {
-        super(props);
-        this.state = {  }
+        super(props)
+        this.state = {  
+            isLoading:false
+        }
+        this.editorRef = createRef()
+        this.formRef = createRef()
     }
     cancelArticleEdit=()=>{
         this.props.history.go(-1)
     }
     onFinish=(values)=>{
-        console.log(values)
+        console.log(values.createAt.valueOf())
     }
+    initEditor=()=>{
+        this.editor = new E(this.editorRef.current)
+        this.editor.customConfig.onchange = (html)=>{
+            // console.log(this.props.form)
+            this.formRef.current.setFieldsValue({
+                content:html
+            })
+        }
+        this.editor.create()
+    }
+    componentDidMount(){
+        this.initEditor()
+    }
+
     render() { 
         const formItemLayout = {
             labelCol: {
@@ -28,7 +50,9 @@ class Edit extends Component {
             bordered={false}
             extra={<Button onClick={this.cancelArticleEdit}>取消</Button>}>
                 {/* <div>表单区域</div> */}
+                <Spin spinning={this.state.isLoading}>
                 <Form
+                    ref={this.formRef}
                     name="normal_login"
                     className="login-form"
                     {...formItemLayout}
@@ -64,20 +88,22 @@ class Edit extends Component {
                         name="createAt"
                         rules={[{ required: true, message: '请输入创建时间!' }]}
                     >
-                        <Input placeholder="createAt" />
+                        <DatePicker showTime placeholder="请输入时间"/>
+                        {/* <Input placeholder="createAt" /> */}
                     </Form.Item>
                     
                     <Form.Item
                         label="内容"
                         name="content"
-                        rules={[{ required: true, message: '请输入内容!' }]}
+                        // rules={[{ required: true, message: '请输入内容!' }]}
                     >
-                        <div>这是文章内容</div>
+                        <div ref={this.editorRef} className="zh-editor"/>
                     </Form.Item>
                     <Form.Item>
                         <Button type="primary" htmlType="submit" className="login-form-button">提交</Button>
                     </Form.Item>
                 </Form>
+                </Spin>
             </Card>
         );
     }
