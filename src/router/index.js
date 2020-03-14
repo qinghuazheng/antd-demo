@@ -37,6 +37,9 @@ export const adminRoutes = [{
     icon:<FileOutlined/>,
     exact:true
 },{
-    pathname:'/admin/article/:id',
+    pathname:'/admin/article/edit/:id',
+    component:ArticleEdit
+},{
+    pathname:'/admin/article/create',
     component:ArticleEdit
 }]

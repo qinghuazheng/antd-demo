@@ -107,6 +107,9 @@ class ArticleList extends Component {
         })
         return columns
     }
+    createArticle(){
+        this.props.history.push('/admin/article/create')
+    }
     editArticle=(id)=>{
         this.props.history.push(`/admin/article/edit/${id}`)
     }
@@ -182,7 +185,12 @@ class ArticleList extends Component {
             <Card 
                 title="文章列表"
                 bordered={false}
-                extra={<Button onClick={this.exportData}>导出excel</Button>}>
+                extra={
+                <div>
+                    <Button type="primary" onClick={this.createArticle.bind(this)}>创建文章</Button>
+                    <Button onClick={this.exportData}>导出excel</Button>
+                </div>
+                }>
                 <Table
                     rowKey={record=>record.id}
                     dataSource={this.state.dataSource} 
@@ -202,7 +210,7 @@ class ArticleList extends Component {
                     title="此操作不可逆"
                     visible={this.state.isShowArticleModal}
                     onOk={this.deleteArticle}
-                    onCancel={this.hideDeleteModal}
+                    onCancel={this.hideDeleteArticleModal}
                     confirmLoading={this.state.deleteArticleConfirmLoading}
                 >
                     <Title level={4}>确认删除<span style={{color:'red'}}>{this.state.showDeleteArticleModal}</span>吗?</Title>    

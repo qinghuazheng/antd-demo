@@ -1,6 +1,8 @@
 import React, { Component,createRef } from 'react';
-import{Card, Button, Form, Input, DatePicker, Spin } from 'antd'
+import{Card, Button, Form, Input, DatePicker, Spin, message } from 'antd'
+import {getArticle,updateArticle,createArticle} from '../../requests'
 import E from 'wangeditor'
+import day from 'dayjs'
 import './edit.less'
 
 // @Form.create()
@@ -8,16 +10,34 @@ class Edit extends Component {
     constructor(props) {
         super(props)
         this.state = {  
-            isLoading:false
+            isLoading:false,
+            title:this.props.match.params.id?'编辑文章':'新增文章'
         }
         this.editorRef = createRef()
         this.formRef = createRef()
+        this.id = this.props.match.params.id
     }
     cancelArticleEdit=()=>{
-        this.props.history.go(-1)
+        this.props.history.goBack()
     }
     onFinish=(values)=>{
-        console.log(values.createAt.valueOf())
+        this.setState({isLoading:true})
+        let data = Object.assign({},values,{createAt:values.createAt.valueOf})
+        if(this.id){
+            updateArticle(this.id,data).then(res=>{
+                message.success('修改成功')
+                this.props.history.push('/admin/article')
+            }).finally(e=>{
+                this.setState({isLoading:false})
+            })
+        }else{
+            createArticle(data).then(res=>{
+                message.success('修改成功')
+                this.props.history.push('/admin/article')
+            }).finally(e=>{
+                this.setState({isLoading:false})
+            })
+        }
     }
     initEditor=()=>{
         this.editor = new E(this.editorRef.current)
@@ -29,8 +49,22 @@ class Edit extends Component {
         }
         this.editor.create()
     }
+    getData(){
+        getArticle(this.props.match.params.id).then(res=>{
+            let initData = Object.assign({},res,{createAt:day(res.createAt)})
+            this.formRef.current.setFieldsValue(initData)
+            this.editor.txt.html(initData.content)
+        }).finally(()=>{
+            this.setState({isLoading:false})
+        })
+    }
     componentDidMount(){
         this.initEditor()
+        //判断是新增文章还是修改文章
+        if(this.id){
+            this.setState({isLoading:true})
+            this.getData()
+        }
     }
 
     render() { 
@@ -46,7 +80,7 @@ class Edit extends Component {
           };
         return ( 
             <Card 
-            title='编辑文章'
+            title={this.state.title}
             bordered={false}
             extra={<Button onClick={this.cancelArticleEdit}>取消</Button>}>
                 {/* <div>表单区域</div> */}
@@ -84,7 +118,7 @@ class Edit extends Component {
                     </Form.Item>
                     
                     <Form.Item
-                        label="创建时间"
+                        label="发布时间"
                         name="createAt"
                         rules={[{ required: true, message: '请输入创建时间!' }]}
                     >

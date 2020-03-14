@@ -29,6 +29,19 @@ export const getArticles = ({offset=0,limit=10}={})=>{
     return service.get('/articleList',{params:{offset,limit}})
 }
 
+//删除文章
 export const deleteArticle = (id)=>{
     return service.post('/article/delete/${id}')
+}
+//获取文章
+export const getArticle = (id)=>{
+    return service.get('/article',{params:{id}})
+}
+//修改文章
+export const updateArticle = (id,data)=>{
+    return service.post('/article/update/${id}',data)
+}
+//创建文章
+export const createArticle = ()=>{
+    return service.post('/article')
 }
