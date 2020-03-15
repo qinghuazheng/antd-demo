@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { Layout, Menu,Dropdown,Avatar,Badge} from 'antd'
 import { DownOutlined } from '@ant-design/icons';
 import {withRouter} from 'react-router-dom'
+import {connect} from 'react-redux'
+import {getNotificationList} from '../../actions/notifications'
 import './frame.less'
 import logo from './logo.png'
 
@@ -9,6 +11,12 @@ import logo from './logo.png'
 const { Header, Content, Sider } = Layout
 
 
+const mapStateToProps = (state) => {
+  return{
+    notificationCounts:state.notifications.list.filter(item=>!item.readState).length
+  }
+}
+@connect(mapStateToProps,{getNotificationList})
 @withRouter
 class Frame extends Component{    
     onMenuClick = ({ item, key, keyPath, domEvent }) => {
@@ -18,10 +26,11 @@ class Frame extends Component{
     onDropdownMenuClick = ({key})=>{
       this.props.history.push(key)
     }
-    menu = (
+    
+    renderDropDown = () => (
       <Menu onClick={this.onDropdownMenuClick}>
         <Menu.Item key="/admin/notifications">
-          <Badge dot>
+          <Badge dot={this.props.notificationCounts}>
             通知中心
           </Badge>
         </Menu.Item>
@@ -33,6 +42,10 @@ class Frame extends Component{
         </Menu.Item>
       </Menu>
     )
+    componentDidMount(){
+        //首页加载慢的原因
+        this.props.getNotificationList()
+    }
     render(){
       const selectedKeys = this.props.location.pathname.split('/')
       selectedKeys.length=3
@@ -42,12 +55,12 @@ class Frame extends Component{
               <div className="logo zh-logo">
                   <img src={logo} alt="logo"/>
               </div>
-              <div class="zh-info">
-              <Dropdown overlay={this.menu} className="zh-info-drop">
+              <div className="zh-info">
+              <Dropdown overlay={this.renderDropDown()} className="zh-info-drop">
                 <div>
                   <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
                   <span>欢迎您，科比</span>
-                  <Badge count={555} offset={[-10,-10]}>
+                  <Badge count={this.props.notificationCounts} offset={[-10,-10]}>
                   <DownOutlined />
                   </Badge>
                 </div>
@@ -73,7 +86,7 @@ class Frame extends Component{
                     }
                 </Menu>
               </Sider>
-              <Layout style={{  }}>
+              <Layout>
                 <Content className="zh-layout-content">
                   {this.props.children}
                 </Content>

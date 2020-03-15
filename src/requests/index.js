@@ -31,7 +31,7 @@ export const getArticles = ({offset=0,limit=10}={})=>{
 
 //删除文章
 export const deleteArticle = (id)=>{
-    return service.post('/article/delete/${id}')
+    return service.post(`/article/delete/${id}`)
 }
 //获取文章
 export const getArticle = (id)=>{
@@ -39,7 +39,7 @@ export const getArticle = (id)=>{
 }
 //修改文章
 export const updateArticle = (id,data)=>{
-    return service.post('/article/update/${id}',data)
+    return service.post(`/article/update/${id}`,data)
 }
 //创建文章
 export const createArticle = (data)=>{
@@ -51,4 +51,9 @@ export const createArticle = (data)=>{
 
 export const getShopSaleData = ()=>{
     return service.get('/shopSaleData')
+}
+
+//获取通知消息
+export const getNotifications = () => {
+    return service.get('/notifications')
 }
