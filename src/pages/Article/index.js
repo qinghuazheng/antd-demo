@@ -99,10 +99,10 @@ class ArticleList extends Component {
             title:'操作',
             dataIndex:'action',
             render:(text,record)=>(
-                <Radio.Group>
-                    <Radio.Button size="small" onClick={this.editArticle.bind(this,record.id)}>编辑</Radio.Button>
-                    <Radio.Button size="small" onClick = {this.showDeleteArticleModal.bind(this,record.id)}>删除</Radio.Button>
-                </Radio.Group>
+                <div>
+                    <Button type="primary" size="small" onClick={this.editArticle.bind(this,record.id)} style={{marginRight:'8px'}}>编辑</Button>
+                    <Button size="small" onClick = {this.showDeleteArticleModal.bind(this,record.id)}>删除</Button>
+                </div>
             )
         })
         return columns
@@ -182,12 +182,13 @@ class ArticleList extends Component {
     }
     render() {
         return ( 
+            <div className="page">
             <Card 
                 title="文章列表"
                 bordered={false}
                 extra={
                 <div>
-                    <Button type="primary" onClick={this.createArticle.bind(this)}>创建文章</Button>
+                    <Button type="primary" onClick={this.createArticle.bind(this)} style={{marginRight:'8px'}}>创建文章</Button>
                     <Button onClick={this.exportData}>导出excel</Button>
                 </div>
                 }>
@@ -216,6 +217,7 @@ class ArticleList extends Component {
                     <Title level={4}>确认删除<span style={{color:'red'}}>{this.state.showDeleteArticleModal}</span>吗?</Title>    
                 </Modal>   
             </Card>
+            </div>
          );
     }
 }

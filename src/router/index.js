@@ -5,7 +5,8 @@ import {
     NotFound,
     Settings,
     ArticleList,
-    ArticleEdit
+    ArticleEdit,
+    Notifications
 } from '../pages'
 import {  DesktopOutlined,  PieChartOutlined,  FileOutlined  } from '@ant-design/icons';
 
@@ -24,12 +25,6 @@ export const adminRoutes = [{
     isNav:true,
     icon:<DesktopOutlined/>
 },{
-    pathname:'/admin/settings',
-    component:Settings,
-    title:'设置',
-    isNav:true,
-    icon:<PieChartOutlined/>
-},{
     pathname:'/admin/article',
     component:ArticleList,
     title:'文章列表',
@@ -37,9 +32,18 @@ export const adminRoutes = [{
     icon:<FileOutlined/>,
     exact:true
 },{
+    pathname:'/admin/settings',
+    component:Settings,
+    title:'设置',
+    isNav:true,
+    icon:<PieChartOutlined/>
+},{
     pathname:'/admin/article/edit/:id',
     component:ArticleEdit
 },{
     pathname:'/admin/article/create',
-    component:ArticleEdit
+    component:ArticleEdit,
+},{
+    pathname:'/admin/notifications',
+    component:Notifications
 }]

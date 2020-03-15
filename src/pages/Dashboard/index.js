@@ -1,50 +1,65 @@
-import React,{Component} from 'react'
-// import {Button} from 'antd'
-
-//可以为木偶组件增加生命周期
-const Parents = (Child)=>{
-    class NewParents extends Component{
-        render(){
-            return (
-                <div>
-                    <span>首页</span>
-                    <Child {...this.props} newName="高阶组件"/>
-                </div>
-            )
-        }
+import React,{Component,createRef} from 'react'
+import {Card,Row, Col} from 'antd'
+import echarts from 'echarts'
+import {getShopSaleData} from '../../requests'
+import './index.less'
+class Dashboard extends Component{
+    constructor(){
+        super()
+        this.graph = createRef()
     }
-    return NewParents
-}
-
-//高阶组件装饰器写法 
-//将自身当作参数传入装饰器
-@Parents
-class App extends Component {
-    render() {
-        return (
-          <div>
-               {/* <Button type="primary">{}</Button> */}
-          </div>
+    initGraph(){
+        getShopSaleData().then(res=>{
+            const option = {
+                title: {
+                    text: '销量统计'
+                },
+                tooltip: {},
+                legend: {
+                    data:['销量']
+                },
+                xAxis: {
+                    data: res.amount.map(item=>item.name)
+                },
+                yAxis: {},
+                series: [{
+                    name: '销量',
+                    type: 'bar',
+                    data: res.amount.map(item=>item.count)
+                }]
+            };
+            this.graphChart.setOption(option);
+        })
+    }
+    componentDidMount(){
+        this.graphChart = echarts.init(this.graph.current)
+        this.initGraph()
+    }
+    render(){
+        return(
+            <div className="page">
+                <Card title="概览" bordered={false} >
+                    <Row gutter={16}>
+                        <Col span={6}>
+                            <div className="zh-gutter-row" style={{backgroundColor:'#ff4d4f'}}>姚明</div>
+                        </Col>
+                        <Col span={6}>
+                            <div className="zh-gutter-row" style={{backgroundColor:'#52c41a'}}>姚明</div>
+                        </Col>
+                        <Col span={6}>
+                            <div className="zh-gutter-row" style={{backgroundColor:'#faad14'}}>姚明</div>
+                        </Col>
+                        <Col span={6}>
+                            <div className="zh-gutter-row" style={{backgroundColor:'#ff7875'}}>姚明</div>
+                        </Col>
+                    </Row>
+                </Card>
+                <Card title="最近浏览量" bordered={false} >
+                    <div ref={this.graph} style={{height:'400px'}}></div>
+                </Card>
+            </div>
         )
     }
 }
 
-export default App
-
-
-//普通高阶组件 
-//传入一个组件 返回一个函数式组件
-// const Parents = (Child)=>()=>{
-//     return (<div>
-//         <span>111</span>
-//         <Child />
-//     </div>)
-// }
-
-// const App = () => (
-//     <div className='app'>
-//         <Button type="primary">Button</Button>
-//     </div>    
-// )
-
-// export default Parents(App)
+export default Dashboard

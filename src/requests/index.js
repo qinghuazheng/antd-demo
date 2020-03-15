@@ -42,6 +42,13 @@ export const updateArticle = (id,data)=>{
     return service.post('/article/update/${id}',data)
 }
 //创建文章
-export const createArticle = ()=>{
-    return service.post('/article')
+export const createArticle = (data)=>{
+    return service.post('/article',data)
+}
+
+//dashboard
+//获取销售数量
+
+export const getShopSaleData = ()=>{
+    return service.get('/shopSaleData')
 }
