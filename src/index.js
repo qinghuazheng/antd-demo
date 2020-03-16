@@ -15,8 +15,9 @@ ReactDOM.render(
         <ConfigProvider locale={zhCN}>
             <Router>
                 <Switch>
+                    <Route path="/admin" component={App} />
                     {/* 后期需要做鉴权 */}
-                    <Route path="/admin" render={(routerProps)=>{return <App {...routerProps}/>}} />
+                    {/* <Route path="/admin" render={(routerProps)=>{return store.getState().user.isLogin ? <App {...routerProps}/> : <Redirect to="/login" />}} /> */}
                     {/*
                         需求一：/进来后redirect到admin，在admin渲染前进行判断，看看是否有权限，没有的话再redirect到login
                         需求二: /进来后redirect到login

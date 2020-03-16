@@ -7,6 +7,10 @@ const service = axios.create({
     headers: {'X-Custom-Header': 'foobar'},
 })
 
+const $ajax = axios.create({
+    baseURL:isDev?'https://www.studyinghome.com/mock/5e5328e72cb0d073b8139e47/example':'',
+})
+
 service.interceptors.request.use((config)=>{
     //增加请求字段 Request Payload
     config.data = Object.assign({},config.data,{
@@ -56,4 +60,9 @@ export const getShopSaleData = ()=>{
 //获取通知消息
 export const getNotifications = () => {
     return service.get('/notifications')
+}
+
+//登录接口
+export const loginRequest = () => {
+    return $ajax.get('/login')
 }
