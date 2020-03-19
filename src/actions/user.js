@@ -15,7 +15,6 @@ const loginSuccess = (userInfo) => {
 }
 
 const loginFailed = () => {
-    debugger
     localStorage.removeItem('authToken')
     sessionStorage.removeItem('authToken')
     localStorage.removeItem('userInfo')

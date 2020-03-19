@@ -47,10 +47,15 @@ class ArticleList extends Component {
 		/* generate XLSX file and send to client */
 		XLSX.writeFile(wb,`${format().format("YYYY年MM月DD日 HH:mm:ss")}.xlsx`)
     }
+    setData=(state)=>{
+        if(!this.updater.isMounted(this))return
+        this.setState(state)
+    }
     getData=()=>{
         getArticles({offset:this.state.offset,limit:this.state.limit}).then(res=>{
             const columns = this.createColumns(res)
-            this.setState({
+            
+            this.setData({
                 dataSource:res.list,
                 columns,
                 total:res.total
@@ -58,6 +63,7 @@ class ArticleList extends Component {
         }).catch(error=>{
 
         }).finally(()=>{
+            if(!this.updater.isMounted(this))return
             this.setState({
                 loading:false
             })
@@ -174,7 +180,12 @@ class ArticleList extends Component {
             this.getData()
         })
     }
+    componentWillUnmount(){
+        console.log('componentWillUnmount')
+        
+    }
     componentDidMount(){
+        console.log(this)
         this.setState({
             loading:true
         })
