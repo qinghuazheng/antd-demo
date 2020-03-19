@@ -1,10 +1,9 @@
 import {START_LOGIN,LOGIN_SUCCESS,LOGIN_FAILED} from '../actions/actionTypes'
+const isLogin = Boolean(localStorage.getItem('authToken')) || Boolean(sessionStorage.getItem('authToken'))
+const userInfo =JSON.parse(localStorage.getItem('userInfo')) || JSON.parse(sessionStorage.getItem('userInfo'))
 const initState = {
-    id:'',
-    displayName:'',
-    avatar:'',
-    role:'',
-    isLogin:false,
+    ...userInfo,
+    isLogin,
     isLoading:false
 }
 
@@ -24,7 +23,13 @@ export default (state=initState,action) => {
                 isLoading:false
             }
         case LOGIN_FAILED:
-            return initState
+            return {
+                id:'',
+                avatar:'',
+                displayName:'',
+                isLogin:false,
+                isLoading:false
+            }
         default:
             return state
     }

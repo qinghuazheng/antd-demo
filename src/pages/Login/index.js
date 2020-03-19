@@ -56,7 +56,7 @@ class Login extends Component{
               />
             </Form.Item>
             <Form.Item name="remember" valuePropName="checked">
-                <Checkbox disabled={this.props.isLoading}>记住我</Checkbox>
+                <Checkbox >记住我</Checkbox>
             </Form.Item>
             <Form.Item>
               <Button loading={this.props.isLoading} type="primary" htmlType="submit">

@@ -4,6 +4,7 @@ import { DownOutlined } from '@ant-design/icons';
 import {withRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import {getNotificationList} from '../../actions/notifications'
+import {logout} from '../../actions/user'
 import './frame.less'
 import logo from './logo.png'
 
@@ -13,10 +14,12 @@ const { Header, Content, Sider } = Layout
 
 const mapStateToProps = (state) => {
   return{
-    notificationCounts:state.notifications.list.filter(item=>!item.readState).length
+    notificationCounts:state.notifications.list.filter(item=>!item.readState).length,
+    avatar:state.user.avatar,
+    displayName:state.user.displayName
   }
 }
-@connect(mapStateToProps,{getNotificationList})
+@connect(mapStateToProps,{getNotificationList,logout})
 @withRouter
 class Frame extends Component{    
     onMenuClick = ({ item, key, keyPath, domEvent }) => {
@@ -24,9 +27,12 @@ class Frame extends Component{
       this.props.history.push(key)
     }
     onDropdownMenuClick = ({key})=>{
-      this.props.history.push(key)
+      if(key === '/logout'){
+        this.props.logout()
+      }else{
+        this.props.history.push(key)
+      }    
     }
-    
     renderDropDown = () => (
       <Menu onClick={this.onDropdownMenuClick}>
         <Menu.Item key="/admin/notifications">
@@ -37,7 +43,7 @@ class Frame extends Component{
         <Menu.Item key="/admin/settings">
             个人设置
         </Menu.Item>
-        <Menu.Item key="/login">
+        <Menu.Item key="/logout">
             退出
         </Menu.Item>
       </Menu>
@@ -58,8 +64,8 @@ class Frame extends Component{
               <div className="zh-info">
               <Dropdown overlay={this.renderDropDown()} className="zh-info-drop">
                 <div>
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
-                  <span>欢迎您，科比</span>
+                  <Avatar src={this.props.avatar} />
+                  <span>欢迎您，{this.props.displayName}</span>
                   <Badge count={this.props.notificationCounts} offset={[-10,-10]}>
                   <DownOutlined />
                   </Badge>

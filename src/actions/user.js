@@ -15,8 +15,19 @@ const loginSuccess = (userInfo) => {
 }
 
 const loginFailed = () => {
+    debugger
+    localStorage.removeItem('authToken')
+    sessionStorage.removeItem('authToken')
+    localStorage.removeItem('userInfo')
+    sessionStorage.removeItem('userInfo')
     return {
         type:LOGIN_FAILED
+    }
+}
+
+export const logout = () => {
+    return dispatch=>{
+        dispatch(loginFailed())
     }
 }
 
@@ -27,7 +38,17 @@ export const login = (userInfo) => {
         .then(res=>{
             // console.log(res)
             if(res.data.code===200){
-                dispatch(loginSuccess(res.data.data))
+                const {remember} = userInfo
+                const {authToken,...user} = res.data.data
+                console.log(userInfo)
+                if(remember){
+                    localStorage.setItem('authToken',authToken)
+                    localStorage.setItem('userInfo',JSON.stringify(user))
+                }else{
+                    sessionStorage.setItem('authToken',authToken)
+                    sessionStorage.setItem('userInfo',JSON.stringify(user))
+                }
+                dispatch(loginSuccess(user))
             }else{
                 dispatch(loginFailed())
             }
